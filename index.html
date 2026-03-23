@@ -9,86 +9,52 @@
 <meta name="theme-color" content="#7C3AED">
 <title>DBT · Diário Anti-Compulsão</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root {
-  --purple:#7C3AED; --purple-l:#EDE9FE; --purple-m:#A78BFA;
-  --teal:#0D9488; --teal-l:#CCFBF1;
-  --pink:#DB2777; --pink-l:#FCE7F3;
-  --amber:#D97706; --amber-l:#FEF3C7;
-  --green:#059669; --green-l:#D1FAE5;
-  --red:#DC2626; --red-l:#FEE2E2;
-  --bg:#F5F3FF; --surface:#fff; --border:#E5E7EB;
-  --text:#1F1B4E; --muted:#6B7280;
-  --r:14px; --r-sm:10px;
-  --nav:64px; --hdr:60px;
-  --shadow:0 4px 20px rgba(124,58,237,.12);
-}
+:root{--purple:#7C3AED;--purple-l:#EDE9FE;--purple-m:#A78BFA;--teal:#0D9488;--teal-l:#CCFBF1;--pink:#DB2777;--pink-l:#FCE7F3;--amber:#D97706;--amber-l:#FEF3C7;--green:#059669;--green-l:#D1FAE5;--red:#DC2626;--red-l:#FEE2E2;--bg:#F5F3FF;--surface:#fff;--border:#E5E7EB;--text:#1F1B4E;--muted:#6B7280;--r:14px;--r-sm:10px;--nav:64px;--hdr:60px;--shadow:0 4px 20px rgba(124,58,237,.12)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
 body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;overscroll-behavior:none}
-
-/* HEADER */
-.hdr{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--hdr);background:linear-gradient(135deg,#7C3AED,#5B21B6);display:flex;align-items:center;justify-content:space-between;padding:0 18px;padding-top:env(safe-area-inset-top);box-shadow:0 2px 20px rgba(124,58,237,.3)}
+.hdr{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--hdr);background:linear-gradient(135deg,#7C3AED,#5B21B6);display:flex;align-items:center;justify-content:space-between;padding:0 18px;box-shadow:0 2px 20px rgba(124,58,237,.3);overflow:hidden}
 .hdr-title{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.5px}
 .hdr-date{font-size:11px;color:rgba(255,255,255,.75);font-weight:600}
-.hdr-streak{background:rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;font-size:13px;font-weight:800;color:#fff}
-
-/* SCROLL */
-.scroll{position:fixed;top:var(--hdr);bottom:var(--nav);left:0;right:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 14px;padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 16px)}
-
-/* BOTTOM NAV */
-.bnav{position:fixed;bottom:0;left:0;right:0;z-index:200;height:var(--nav);padding-bottom:env(safe-area-inset-bottom);background:#fff;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);box-shadow:0 -4px 20px rgba(0,0,0,.06)}
+.hdr-streak{background:rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;font-size:13px;font-weight:800;color:#fff;cursor:pointer}
+.scroll{position:fixed;top:var(--hdr);bottom:var(--nav);left:0;right:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 14px 32px}
+.bnav{position:fixed;bottom:0;left:0;right:0;z-index:100;height:var(--nav);padding-bottom:env(safe-area-inset-bottom);background:#fff;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);box-shadow:0 -4px 20px rgba(0,0,0,.06)}
 .nb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:none;background:none;cursor:pointer;padding:6px 4px;color:var(--muted);font-family:'Nunito',sans-serif;font-size:10px;font-weight:700;transition:color .2s}
 .nb.active{color:var(--purple)}
 .nb-icon{font-size:22px;line-height:1;transition:transform .2s}
 .nb.active .nb-icon{transform:scale(1.18)}
-
-/* SECTIONS */
 .sec{display:none;animation:fadeUp .22s ease}
 .sec.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-
-/* PAGE TITLE */
 .ptitle{font-size:24px;font-weight:800;color:var(--text);margin-bottom:2px}
 .psub{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:18px}
-
-/* CARD */
 .card{background:#fff;border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid rgba(124,58,237,.07)}
 .ctitle{font-size:15px;font-weight:800;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .cicon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .csub{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6;font-weight:600}
-
-/* FORM */
 label{font-size:11px;font-weight:800;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
-input[type=text],input[type=number],textarea,select{width:100%;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:10px 13px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;color:var(--text);background:var(--bg);outline:none;transition:border-color .2s;margin-bottom:10px;display:block;-webkit-appearance:none}
+input[type=text],input[type=email],input[type=password],input[type=number],textarea,select{width:100%;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:10px 13px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;color:var(--text);background:var(--bg);outline:none;transition:border-color .2s;margin-bottom:10px;display:block;-webkit-appearance:none}
 input:focus,textarea:focus,select:focus{border-color:var(--purple-m);background:#fff}
 textarea{resize:vertical;min-height:76px}
-
-/* WEEK */
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:10px}
 .wday{aspect-ratio:1;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;font-weight:800;background:var(--bg);border:1.5px solid var(--border);color:var(--muted);gap:1px}
 .wday .dl{font-size:8px;font-weight:700}
 .wday.filled{background:var(--green-l);border-color:var(--green);color:var(--green)}
 .wday.comp{background:var(--red-l);border-color:var(--red);color:var(--red)}
 .wday.today{border-color:var(--purple);color:var(--purple);background:var(--purple-l)}
-.wday.today.filled{background:var(--green-l);border-color:var(--green);color:var(--green)}
-
-/* SCALE */
 .srow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .sbtn{width:40px;height:40px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);font-size:14px;font-weight:800;cursor:pointer;color:var(--muted);transition:all .15s;font-family:'Nunito',sans-serif}
 .sbtn:active{transform:scale(.9)}
 .sbtn.sel{background:var(--purple);border-color:var(--purple);color:#fff}
 .sbtn.sel.red{background:var(--red);border-color:var(--red)}
-
-/* EMOTIONS */
 .egrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
 .eitem{background:var(--bg);border-radius:var(--r-sm);padding:10px 10px 8px;border:1.5px solid var(--border)}
 .elabel{font-size:13px;font-weight:800;margin-bottom:5px;color:var(--text)}
 .escale{display:flex;gap:3px}
 .ebtn{flex:1;height:26px;border-radius:5px;border:1px solid var(--border);background:#fff;font-size:11px;font-weight:800;cursor:pointer;color:var(--muted);font-family:'Nunito',sans-serif;transition:all .12s}
 .ebtn.sel{background:var(--purple);border-color:var(--purple);color:#fff}
-
-/* SKILLS */
 .sklist{display:flex;flex-direction:column;gap:7px}
 .skitem{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:var(--r-sm);border:1.5px solid var(--border);background:var(--bg);cursor:pointer;transition:all .15s}
 .skitem.chk{background:var(--green-l);border-color:var(--green)}
@@ -96,82 +62,58 @@ textarea{resize:vertical;min-height:76px}
 .skitem.chk .skchk{background:var(--green);border-color:var(--green)}
 .skname{font-size:13px;font-weight:800;color:var(--text)}
 .skdesc{font-size:11px;color:var(--muted);margin-top:1px;font-weight:600}
-
-/* BUTTONS */
 .btn{padding:12px 18px;border-radius:var(--r-sm);border:none;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .15s;text-align:center;display:block}
 .btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
 .btn-p{background:linear-gradient(135deg,#7C3AED,#5B21B6);color:#fff;width:100%;box-shadow:0 4px 15px rgba(124,58,237,.35)}
 .btn-t{background:linear-gradient(135deg,#0D9488,#0F766E);color:#fff;width:100%;box-shadow:0 4px 15px rgba(13,148,136,.3)}
 .btn-s{background:var(--bg);color:var(--text);border:1.5px solid var(--border);font-size:13px;padding:9px 14px}
-
-/* TAGS */
+.btn-danger{background:var(--red-l);color:var(--red);border:1.5px solid var(--red);width:100%}
 .tag{display:inline-flex;align-items:center;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:800;margin:2px}
-.tg{background:var(--green-l);color:var(--green)}
-.tr{background:var(--red-l);color:var(--red)}
-.ta{background:var(--amber-l);color:var(--amber)}
-.tp{background:var(--purple-l);color:var(--purple)}
-.tt{background:var(--teal-l);color:var(--teal)}
-.tn{background:var(--bg);color:var(--muted);border:1px solid var(--border)}
-
+.tg{background:var(--green-l);color:var(--green)}.tr{background:var(--red-l);color:var(--red)}.ta{background:var(--amber-l);color:var(--amber)}.tp{background:var(--purple-l);color:var(--purple)}.tt{background:var(--teal-l);color:var(--teal)}
 hr{border:none;border-top:1px solid var(--border);margin:12px 0}
-
-/* CHAIN */
 .cstep{border-left:3px solid var(--purple-l);padding:0 0 18px 17px;position:relative;margin-left:10px}
 .cstep:last-child{border-left-color:transparent;padding-bottom:0}
 .cdot{width:20px;height:20px;border-radius:50%;background:var(--purple);position:absolute;left:-11px;top:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff}
 .clabel{font-size:12px;font-weight:900;color:var(--purple);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
-
-/* VULN */
 .vgrid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 .vtag{padding:7px 13px;border-radius:20px;border:1.5px solid var(--border);background:#fff;font-size:13px;font-weight:700;cursor:pointer;color:var(--muted);transition:all .15s;font-family:'Nunito',sans-serif}
 .vtag.sel{background:var(--amber-l);border-color:var(--amber);color:var(--amber)}
-
-/* ELO */
 .eloitem{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:11px;margin-bottom:7px}
 .elorow{display:flex;gap:7px;align-items:flex-start;margin-bottom:7px}
 .elorow select{margin-bottom:0;flex:0 0 110px;font-size:13px}
 .elorow input{margin-bottom:0;flex:1;font-size:13px}
 .elodel{background:var(--red-l);border:none;border-radius:6px;padding:6px 10px;cursor:pointer;color:var(--red);font-size:16px;font-weight:800}
 .elosub{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
-
-/* HISTORY */
 .hitem{padding:12px 0;border-bottom:1px solid var(--border)}
 .hitem:last-child{border-bottom:none}
 .srow3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
 .sbox{background:#fff;border-radius:var(--r);padding:14px 8px;text-align:center;box-shadow:var(--shadow)}
 .snum{font-size:28px;font-weight:900;color:var(--purple)}
 .slbl{font-size:10px;color:var(--muted);font-weight:700;margin-top:2px}
-
-/* QUOTE */
 .qcard{background:linear-gradient(135deg,#7C3AED,#DB2777);border-radius:var(--r);padding:18px;margin-bottom:10px;color:#fff;position:relative;overflow:hidden}
 .qcard::before{content:'❝';font-size:55px;position:absolute;top:-5px;left:10px;opacity:.2;line-height:1;pointer-events:none}
 .qtext{font-size:15px;font-weight:700;line-height:1.7;padding-left:8px;position:relative}
-
-/* LIST */
 .lentry{background:var(--bg);border:1.5px solid var(--border);border-radius:9px;padding:9px 11px;margin-bottom:5px;display:flex;align-items:center;gap:8px}
-.lnum{font-size:11px;font-weight:800;color:var(--muted)}
 .ldel{background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;padding:0 3px;margin-left:auto}
-
-/* YN */
 .yn{display:flex;gap:8px;margin-bottom:10px}
 .yn-b{flex:1;padding:11px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all .15s;color:var(--muted)}
 .yn-b.yes.a{background:var(--red-l);border-color:var(--red);color:var(--red)}
 .yn-b.no.a{background:var(--green-l);border-color:var(--green);color:var(--green)}
-
 .r2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .cdisp{background:var(--purple-l);border-radius:var(--r-sm);padding:13px;font-size:14px;font-weight:700;line-height:1.7;color:var(--text);margin-top:10px;border-left:4px solid var(--purple)}
-
-/* ICON COLORS */
-.ip{background:var(--purple-l)} .it{background:var(--teal-l)} .ipk{background:var(--pink-l)} .ia{background:var(--amber-l)} .ig{background:var(--green-l)}
-
-/* TOAST */
+.ip{background:var(--purple-l)}.it{background:var(--teal-l)}.ipk{background:var(--pink-l)}.ia{background:var(--amber-l)}.ig{background:var(--green-l)}
 .toast{position:fixed;bottom:calc(var(--nav) + 18px);left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#fff;padding:11px 22px;border-radius:50px;font-size:14px;font-weight:800;z-index:999;transition:transform .3s ease;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.25)}
 .toast.show{transform:translateX(-50%) translateY(0)}
-
-/* GUIDE */
-.guide-hero{border-radius:var(--r);padding:18px;margin-bottom:12px;color:#fff}
-.guide-hero h3{font-size:17px;font-weight:800;margin-bottom:4px}
-.guide-hero p{font-size:12px;opacity:.88;font-weight:600;line-height:1.5}
+.mot-pill{background:#fff;border:1.5px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:all .15s;position:relative}
+.mot-pill.sel{border-color:var(--purple);background:var(--purple-l)}
+.mot-pill-txt{font-size:13px;font-weight:700;color:var(--text);line-height:1.6;padding-right:28px}
+.mot-check{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:18px;opacity:0;transition:opacity .15s}
+.mot-pill.sel .mot-check{opacity:1}
+.slabel{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;margin-top:4px}
+.empty{text-align:center;padding:36px 16px;color:var(--muted)}
+.empty-ico{font-size:38px;margin-bottom:10px}
+.empty p{font-size:14px;font-weight:700}
 .skill-card{background:#fff;border-radius:var(--r);margin-bottom:10px;box-shadow:var(--shadow);border:1px solid rgba(124,58,237,.07);overflow:hidden}
 .skill-card-hdr{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
 .skill-card-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
@@ -184,34 +126,60 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
 .skill-body p{font-size:13px;font-weight:600;color:var(--text);line-height:1.7;margin-top:12px}
 .skill-tip{background:var(--bg);border-radius:8px;padding:10px 12px;margin-top:10px;font-size:12px;font-weight:700;color:var(--muted);border-left:3px solid var(--purple-m)}
 .skill-tip strong{color:var(--purple);display:block;margin-bottom:3px}
-.mot-pill{background:#fff;border:1.5px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:all .15s;position:relative}
-.mot-pill.sel{border-color:var(--purple);background:var(--purple-l)}
-.mot-pill-txt{font-size:13px;font-weight:700;color:var(--text);line-height:1.6;padding-right:28px}
-.mot-check{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:18px;opacity:0;transition:opacity .15s}
-.mot-pill.sel .mot-check{opacity:1}
-.slabel{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;margin-top:4px}
-.empty{text-align:center;padding:36px 16px;color:var(--muted)}
-.empty-ico{font-size:38px;margin-bottom:10px}
-.empty p{font-size:14px;font-weight:700}
+.guide-hero{border-radius:var(--r);padding:18px;margin-bottom:12px;color:#fff}
+.guide-hero h3{font-size:17px;font-weight:800;margin-bottom:4px}
+.guide-hero p{font-size:12px;opacity:.88;font-weight:600;line-height:1.5}
+
+/* AUTH */
+.auth-wrap{position:fixed;inset:0;background:linear-gradient(160deg,#EDE9FE,#FCE7F3);display:flex;align-items:center;justify-content:center;z-index:999;padding:24px;overflow:hidden}
+.auth-box{background:#fff;border-radius:20px;padding:28px 24px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(124,58,237,.2)}
+.auth-logo{font-size:36px;text-align:center;margin-bottom:8px}
+.auth-title{font-size:22px;font-weight:900;color:var(--text);text-align:center;margin-bottom:4px}
+.auth-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px;font-weight:600}
+.auth-toggle{text-align:center;margin-top:16px;font-size:13px;color:var(--muted);font-weight:700}
+.auth-toggle span{color:var(--purple);cursor:pointer;font-weight:800}
+.auth-err{background:var(--red-l);color:var(--red);border-radius:var(--r-sm);padding:10px 13px;font-size:13px;font-weight:700;margin-bottom:10px;display:none}
+.sync-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;background:var(--green-l);color:var(--green)}
+.sync-badge.syncing{background:var(--amber-l);color:var(--amber)}
 </style>
 </head>
 <body>
+
+<!-- AUTH SCREEN -->
+<div class="auth-wrap" id="authWrap">
+  <div class="auth-box">
+    <div class="auth-logo">🌱</div>
+    <div class="auth-title">DBT Diário</div>
+    <div class="auth-sub" id="authSub">Entre para acessar seu diário</div>
+    <div class="auth-err" id="authErr"></div>
+    <label>E-mail</label>
+    <input type="email" id="authEmail" placeholder="seu@email.com">
+    <label>Senha</label>
+    <input type="password" id="authPass" placeholder="Mínimo 6 caracteres">
+    <button class="btn btn-p" id="authBtn" onclick="doAuth()">Entrar</button>
+    <div class="auth-toggle">
+      <span id="authSwitch" onclick="toggleAuth()">Não tenho conta — Criar agora</span>
+    </div>
+  </div>
+</div>
 
 <header class="hdr">
   <div>
     <div class="hdr-title">🌱 DBT Diário</div>
     <div class="hdr-date" id="hdrDate"></div>
   </div>
-  <div class="hdr-streak" id="hdrStreak">🔥 0 dias</div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="hdr-streak" id="hdrStreak">🔥 0 dias</div>
+    <div class="hdr-streak" onclick="signOut()" style="font-size:11px">Sair</div>
+  </div>
 </header>
 
 <div class="scroll" id="scroll">
 
-  <!-- ═══ DIÁRIO ═══ -->
+  <!-- DIÁRIO -->
   <section class="sec active" id="sec-diario">
     <div class="ptitle">Cartão Diário</div>
     <div class="psub">Preencha todo dia antes de dormir 🌙</div>
-
     <div class="card">
       <div class="ctitle"><div class="cicon ip">📅</div>Minha semana</div>
       <div class="week" id="weekGrid"></div>
@@ -221,15 +189,14 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
         <span style="color:var(--purple)">● Hoje</span>
       </div>
     </div>
-
     <div class="card">
       <div class="ctitle"><div class="cicon ipk">🍽️</div>Episódios de hoje</div>
-      <div class="csub">Episódios <strong>pequenos</strong> — comer além, sem controle total</div>
+      <div class="csub">Episódios <strong>pequenos</strong></div>
       <div class="srow" id="scSmall"></div>
-      <div class="csub">Episódios <strong>grandes</strong> — muito + perda de controle clara</div>
+      <div class="csub">Episódios <strong>grandes</strong></div>
       <div class="srow" id="scBig"></div>
       <hr>
-      <div class="csub" style="margin-bottom:8px">Outro comportamento-problema hoje?</div>
+      <div class="csub">Outro comportamento-problema hoje?</div>
       <div class="yn">
         <button class="yn-b yes" id="cpSim" onclick="setCp(true)">⚠️ Sim</button>
         <button class="yn-b no" id="cpNao" onclick="setCp(false)">✅ Não</button>
@@ -238,91 +205,59 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
         <textarea id="cpTxt" placeholder="Descreva o comportamento..."></textarea>
       </div>
     </div>
-
     <div class="card">
       <div class="ctitle"><div class="cicon it">💜</div>Emoções do dia</div>
       <div class="csub">Escala 0–6 &nbsp;(0 = nenhuma · 6 = muito intensa)</div>
       <div class="egrid" id="emotionGrid"></div>
     </div>
-
     <div class="card">
       <div class="ctitle"><div class="cicon ig">✨</div>Habilidades praticadas</div>
       <div class="sklist" id="skillList"></div>
     </div>
-
     <div class="card">
       <div class="ctitle"><div class="cicon ia">📝</div>Notas finais</div>
-      <div class="csub">Vontade de desistir do programa (0 = nenhuma · 6 = forte)</div>
+      <div class="csub">Vontade de desistir (0 = nenhuma · 6 = forte)</div>
       <div class="srow" id="scQuit"></div>
-      <label>Reflexão livre do dia</label>
-      <textarea id="dNotes" placeholder="Como foi seu dia? O que sentiu?"></textarea>
-      <button class="btn btn-p" onclick="saveDiary()">💾 Salvar registro do dia</button>
+      <label>Reflexão livre</label>
+      <textarea id="dNotes" placeholder="Como foi seu dia?"></textarea>
+      <button class="btn btn-p" id="saveDiaryBtn" onclick="saveDiary()">💾 Salvar registro do dia</button>
     </div>
   </section>
 
-  <!-- ═══ CARTÕES ═══ -->
+  <!-- CARTÕES -->
   <section class="sec" id="sec-cartoes">
     <div class="ptitle">Meus Cartões</div>
-    <div class="psub">Releia toda manhã para renovar o comprometimento ☀️</div>
-
+    <div class="psub">Releia toda manhã ☀️</div>
     <div class="card">
       <div class="ctitle"><div class="cicon ip">💜</div>Cartão de Motivação</div>
-      <div class="csub">Escolha a frase que mais faz sentido para você — ou escreva a sua própria.</div>
-
-      <div class="slabel">Frases do livro — toque para selecionar</div>
       <div id="motPills">
-        <div class="mot-pill" onclick="selectMot(this,0)">
-          <div class="mot-pill-txt">A compulsão alimentar me afasta da possibilidade de me sentir plenamente feliz e satisfeito(a) comigo mesmo(a). Quero viver com todo meu potencial.</div>
-          <span class="mot-check">💜</span>
-        </div>
-        <div class="mot-pill" onclick="selectMot(this,1)">
-          <div class="mot-pill-txt">Meus valores são importantes demais para perdê-los de vista. O abismo que a compulsão oferece pode ser atraente, mas quero estar presente na minha própria vida.</div>
-          <span class="mot-check">💜</span>
-        </div>
-        <div class="mot-pill" onclick="selectMot(this,2)">
-          <div class="mot-pill-txt">Cada vez que uso uma habilidade no lugar da compulsão, estou reprogramando meu cérebro e me tornando mais livre. Cada tentativa conta.</div>
-          <span class="mot-check">💜</span>
-        </div>
-        <div class="mot-pill" onclick="selectMot(this,3)">
-          <div class="mot-pill-txt">Qualquer recaída, embora indesejável, é uma nova oportunidade de aprender e praticar. Não preciso ser perfeito(a) — preciso continuar.</div>
-          <span class="mot-check">💜</span>
-        </div>
-        <div class="mot-pill" onclick="selectMot(this,4)">
-          <div class="mot-pill-txt">Não estou simplesmente "sobrevivendo". Mereço a melhor vida que sou capaz de viver — e estou aprendendo a construí-la, um dia de cada vez.</div>
-          <span class="mot-check">💜</span>
-        </div>
+        <div class="mot-pill" onclick="selectMot(this,0)"><div class="mot-pill-txt">A compulsão alimentar me afasta da possibilidade de me sentir plenamente feliz e satisfeito(a) comigo mesmo(a). Quero viver com todo meu potencial.</div><span class="mot-check">💜</span></div>
+        <div class="mot-pill" onclick="selectMot(this,1)"><div class="mot-pill-txt">Meus valores são importantes demais para perdê-los de vista. O abismo que a compulsão oferece pode ser atraente, mas quero estar presente na minha própria vida.</div><span class="mot-check">💜</span></div>
+        <div class="mot-pill" onclick="selectMot(this,2)"><div class="mot-pill-txt">Cada vez que uso uma habilidade no lugar da compulsão, estou reprogramando meu cérebro e me tornando mais livre. Cada tentativa conta.</div><span class="mot-check">💜</span></div>
+        <div class="mot-pill" onclick="selectMot(this,3)"><div class="mot-pill-txt">Qualquer recaída, embora indesejável, é uma nova oportunidade de aprender e praticar. Não preciso ser perfeito(a) — preciso continuar.</div><span class="mot-check">💜</span></div>
+        <div class="mot-pill" onclick="selectMot(this,4)"><div class="mot-pill-txt">Não estou simplesmente "sobrevivendo". Mereço a melhor vida que sou capaz de viver — e estou aprendendo a construí-la, um dia de cada vez.</div><span class="mot-check">💜</span></div>
       </div>
-
-      <div class="slabel" style="margin-top:14px">Ou escreva a sua própria motivação</div>
-      <textarea id="motInput" placeholder="O que te motiva a continuar? Escreva com suas palavras..."></textarea>
-      <button class="btn btn-p" onclick="saveMot()">Salvar motivação personalizada</button>
-
+      <div class="slabel" style="margin-top:14px">Ou escreva a sua própria</div>
+      <textarea id="motInput" placeholder="O que te motiva a continuar?"></textarea>
+      <button class="btn btn-p" onclick="saveMot()">Salvar motivação</button>
       <div id="motDisplay" style="display:none;margin-top:12px">
         <div class="slabel">Sua motivação atual</div>
         <div class="qcard"><div class="qtext" id="motDisp"></div></div>
       </div>
     </div>
-
     <div class="card">
-      <div class="ctitle"><div class="cicon it">🤝</div>Cartão de Comprometimento</div>
-      <div class="csub">Seu termo pessoal. Leia toda manhã e sempre que sentir impulso de comer.</div>
-
-      <div class="slabel">Exemplo do livro (de Kátia)</div>
+      <div class="ctitle"><div class="cicon it">🤝</div>Comprometimento</div>
       <div class="cdisp" style="margin-bottom:12px;cursor:pointer" onclick="useExampleCommit()">
-        <div style="font-size:11px;font-weight:800;color:var(--purple);margin-bottom:6px">TOQUE PARA USAR ESTE COMO BASE ›</div>
-        Para conseguir honrar o valor que minha vida tem, a compulsão alimentar NÃO é uma opção. Quando acabo recorrendo à compulsão, não estou vivendo de fato. Quero descobrir quem sou de verdade. O abismo da compulsão, embora atraente no início, é um desperdício das minhas oportunidades de viver plenamente e com autenticidade.
+        <div style="font-size:11px;font-weight:800;color:var(--purple);margin-bottom:6px">TOQUE PARA USAR COMO BASE ›</div>
+        Para conseguir honrar o valor que minha vida tem, a compulsão alimentar NÃO é uma opção. Quando acabo recorrendo à compulsão, não estou vivendo de fato. Quero descobrir quem sou de verdade.
       </div>
-
       <label>Meu comprometimento</label>
-      <textarea id="comInput" placeholder="Escreva com suas próprias palavras por que a compulsão não é mais uma opção para você..." style="min-height:110px"></textarea>
+      <textarea id="comInput" placeholder="Escreva por que a compulsão não é mais uma opção..." style="min-height:110px"></textarea>
       <button class="btn btn-t" onclick="saveCom()">Salvar comprometimento</button>
-      <div id="comDisp" style="display:none" class="cdisp" id="comDisp"></div>
+      <div id="comDisp" style="display:none" class="cdisp"></div>
     </div>
-
     <div class="card">
       <div class="ctitle"><div class="cicon ipk">⚖️</div>Vantagens × Desvantagens</div>
-      <div class="csub">Lado ⚠️: piores consequências de continuar. &nbsp;Lado ✅: melhores de parar.</div>
-
       <div style="margin-bottom:12px">
         <div style="font-size:13px;font-weight:900;color:var(--red);margin-bottom:7px">⚠️ Continuar com a compulsão</div>
         <div id="disadList"></div>
@@ -343,28 +278,15 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
     </div>
   </section>
 
-  <!-- ═══ CADEIA ═══ -->
+  <!-- CADEIA -->
   <section class="sec" id="sec-cadeia">
     <div class="ptitle">Análise em Cadeia</div>
-    <div class="psub">Use após um episódio para aprender e crescer 🔗</div>
-
+    <div class="psub">Use após um episódio 🔗</div>
     <div class="card">
+      <div class="cstep"><div class="cdot">1</div><div class="clabel">Comportamento problemático</div><textarea id="c1" placeholder="Quando, onde, duração, o que comeu..."></textarea></div>
+      <div class="cstep"><div class="cdot">2</div><div class="clabel">Evento gatilho</div><textarea id="c2" placeholder="O que aconteceu antes?"></textarea></div>
       <div class="cstep">
-        <div class="cdot">1</div>
-        <div class="clabel">Comportamento problemático</div>
-        <div class="csub">Descreva o episódio: quando, onde, duração, o que comeu.</div>
-        <textarea id="c1" placeholder="Ex: Terça-feira à noite, comi pão e queijo por 40 min sem parar..."></textarea>
-      </div>
-      <div class="cstep">
-        <div class="cdot">2</div>
-        <div class="clabel">Evento gatilho</div>
-        <div class="csub">O que aconteceu antes e disparou essa cadeia?</div>
-        <textarea id="c2" placeholder="Ex: Discussão, notícia ruim, mensagem difícil..."></textarea>
-      </div>
-      <div class="cstep">
-        <div class="cdot">3</div>
-        <div class="clabel">Fatores de vulnerabilidade</div>
-        <div class="csub">O que me tornava mais frágil naquele momento?</div>
+        <div class="cdot">3</div><div class="clabel">Fatores de vulnerabilidade</div>
         <div class="vgrid" id="vulnTags">
           <button class="vtag" onclick="toggleVuln(this,'Sono ruim')">😴 Sono ruim</button>
           <button class="vtag" onclick="toggleVuln(this,'Cansaço')">😮‍💨 Cansaço</button>
@@ -377,182 +299,42 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
         </div>
         <input type="text" id="c3x" placeholder="Outros fatores...">
       </div>
-      <div class="cstep">
-        <div class="cdot">4</div>
-        <div class="clabel">Elos da cadeia</div>
-        <div class="csub">O que aconteceu entre o gatilho e a compulsão?</div>
-        <div id="elosList"></div>
-        <button class="btn btn-s" onclick="addElo()" style="width:100%;margin-bottom:0">+ Adicionar elo</button>
-      </div>
-      <div class="cstep">
-        <div class="cdot">5</div>
-        <div class="clabel">Habilidade alternativa</div>
-        <div class="csub">O que você poderia ter feito diferente em algum elo?</div>
-        <textarea id="c5" placeholder="Ex: Respiração diafragmática quando percebi a tensão..."></textarea>
-      </div>
-      <div class="cstep">
-        <div class="cdot">6</div>
-        <div class="clabel">Consequências</div>
+      <div class="cstep"><div class="cdot">4</div><div class="clabel">Elos da cadeia</div><div id="elosList"></div><button class="btn btn-s" onclick="addElo()" style="width:100%;margin-bottom:0">+ Adicionar elo</button></div>
+      <div class="cstep"><div class="cdot">5</div><div class="clabel">Habilidade alternativa</div><textarea id="c5" placeholder="O que poderia ter feito diferente?"></textarea></div>
+      <div class="cstep"><div class="cdot">6</div><div class="clabel">Consequências</div>
         <div class="r2">
-          <div><label>Imediatas</label><textarea id="c6a" placeholder="Alívio, entorpecimento..." style="min-height:68px"></textarea></div>
-          <div><label>Longo prazo</label><textarea id="c6b" placeholder="Vergonha, desconforto..." style="min-height:68px"></textarea></div>
+          <div><label>Imediatas</label><textarea id="c6a" style="min-height:68px"></textarea></div>
+          <div><label>Longo prazo</label><textarea id="c6b" style="min-height:68px"></textarea></div>
         </div>
       </div>
-      <div class="cstep" style="border-left-color:transparent;padding-bottom:0">
-        <div class="cdot">7</div>
-        <div class="clabel">Plano de reparação</div>
-        <div class="csub">Como me perdoo? O que farei diferente da próxima vez?</div>
-        <textarea id="c7" placeholder="Vou me perdoar sem julgamento. Na próxima vez..."></textarea>
-      </div>
+      <div class="cstep" style="border-left-color:transparent;padding-bottom:0"><div class="cdot">7</div><div class="clabel">Plano de reparação</div><textarea id="c7" placeholder="Como me perdoo? O que farei diferente?"></textarea></div>
       <button class="btn btn-t" onclick="saveChain()">💾 Salvar análise em cadeia</button>
     </div>
   </section>
 
-  <!-- ═══ GUIA ═══ -->
+  <!-- GUIA -->
   <section class="sec" id="sec-guia">
     <div class="ptitle">Guia DBT</div>
-    <div class="psub">Entenda cada habilidade e como usar 📖</div>
-
+    <div class="psub">Entenda cada habilidade 📖</div>
     <div class="guide-hero" style="background:linear-gradient(135deg,#7C3AED,#5B21B6)">
       <h3>O que é a DBT?</h3>
-      <p>A Terapia Comportamental Dialética ensina habilidades para lidar com emoções difíceis sem recorrer à comida. Você aprenderá 3 módulos: <strong>Mindfulness · Regulação Emocional · Tolerância ao Mal-Estar</strong></p>
+      <p>A Terapia Comportamental Dialética ensina habilidades para lidar com emoções difíceis sem recorrer à comida. Módulos: <strong>Mindfulness · Regulação Emocional · Tolerância ao Mal-Estar</strong></p>
     </div>
-
-    <!-- ANÁLISE EM CADEIA -->
-    <div class="slabel">🔗 Ferramenta principal</div>
-    <div class="skill-card">
-      <div class="skill-card-hdr" onclick="toggleSkill(this)">
-        <div class="skill-card-icon ip">🔗</div>
-        <div><div class="skill-card-name">Análise em Cadeia</div><div class="skill-card-cap">Capítulo 4 · Ferramenta essencial</div></div>
-        <span class="skill-chev">›</span>
-      </div>
-      <div class="skill-body">
-        <p>A compulsão alimentar não "simplesmente acontece" — ela é o resultado de uma <strong>cadeia de eventos detectáveis</strong>. A análise em cadeia serve para você mapear esse caminho passo a passo, identificar onde poderia ter agido diferente e aprender com cada episódio sem se julgar.</p>
-        <p>Você vai descrever o comportamento problemático, o evento gatilho, os fatores que te deixavam vulnerável, cada elo da cadeia (sentimentos, pensamentos, ações, sensações corporais, eventos), as consequências e um plano de reparação.</p>
-        <div class="skill-tip"><strong>Como usar</strong>Preencha após cada episódio. Com o tempo, você começa a reconhecer seus padrões e intervir antes da compulsão acontecer.</div>
-        <div class="skill-tip"><strong>Tipos de elo (ACPES)</strong>A = Ação · C = Sensação Corporal · P = Pensamento · E = Evento · S = Sentimento</div>
-      </div>
-    </div>
-
-    <!-- MINDFULNESS -->
-    <div class="slabel" style="margin-top:14px">🧘 Módulo 1 · Mindfulness</div>
-
-    <div class="skill-card">
-      <div class="skill-card-hdr" onclick="toggleSkill(this)">
-        <div class="skill-card-icon" style="background:var(--purple-l)">🧠</div>
-        <div><div class="skill-card-name">Mente Sábia</div><div class="skill-card-cap">Capítulo 3</div></div>
-        <span class="skill-chev">›</span>
-      </div>
-      <div class="skill-body">
-        <p>A mente sábia é o ponto de equilíbrio entre a <strong>mente racional</strong> (fria, lógica) e a <strong>mente emocional</strong> (quente, impulsiva). Na mente sábia, você age a partir do seu melhor eu — suas decisões são alinhadas com seus valores mais profundos.</p>
-        <p>Para acessá-la, pergunte a si mesmo: <em>"O que minha mente sábia diria agora?"</em> Respire fundo, desacelere e escute a resposta que vem de dentro.</p>
-        <div class="skill-tip"><strong>Quando usar</strong>Antes de decisões difíceis, quando sentir impulso de comer, em momentos de conflito emocional.</div>
-      </div>
-    </div>
-
-    <div class="skill-card">
-      <div class="skill-card-hdr" onclick="toggleSkill(this)">
-        <div class="skill-card-icon" style="background:var(--blue-l,#DBEAFE)">🫁</div>
-        <div><div class="skill-card-name">Respiração Diafragmática</div><div class="skill-card-cap">Capítulo 3</div></div>
-        <span class="skill-chev">›</span>
-      </div>
-      <div class="skill-body">
-        <p>Respiração lenta e profunda que ativa o sistema nervoso parassimpático, reduzindo a intensidade das emoções e do estresse físico. Quando sentimos emoções fortes, a respiração fica superficial — respirar fundo reverte isso.</p>
-        <p><strong>Como praticar:</strong> Inspire pelo nariz contando até 3 enquanto a barriga se expande. Expire contando até 5 dizendo silenciosamente "relaxe". Repita 10 vezes.</p>
-        <div class="skill-tip"><strong>Quando usar</strong>Ao sentir tensão no corpo, impulso de comer, ansiedade ou logo após um evento gatilho.</div>
-        <div class="skill-tip"><strong>Dica</strong>Pratique 2x por dia quando está calmo(a). Quanto mais pratica em paz, mais fácil é usar sob estresse.</div>
-      </div>
-    </div>
-
-    <div class="skill-card">
-      <div class="skill-card-hdr" onclick="toggleSkill(this)">
-        <div class="skill-card-icon" style="background:var(--teal-l)">👁️</div>
-        <div><div class="skill-card-name">Observação sem Julgamento</div><div class="skill-card-cap">Capítulo 5</div></div>
-        <span class="skill-chev">›</span>
-      </div>
-      <div class="skill-body">
-        <p>Observar significa experimentar sensações físicas e emoções intensas <strong>sem julgá-las nem reagir a elas</strong>. Em vez de "sou um fracasso por estar com raiva", apenas "estou notando raiva agora".</p>
-        <p>Você pode aceitar seus sentimentos sem precisar aprová-los ou agir com base neles. A observação te ajuda a sair da mente emocional e acessar a mente sábia.</p>
-        <div class="skill-tip"><strong>Prática</strong>Quando surgir uma emoção difícil, nomeie-a: "Estou observando ansiedade. É intensa, mas vai passar."</div>
-      </div>
-    </div>
-
-    <div class="skill-card">
-      <div class="skill-card-hdr" onclick="toggleSkill(this)">
-        <div class="skill-card-icon" style="background:var(--pink-l)">⚖️</div>
-        <div><div class="skill-card-name">Pensamento Dialético</div><div class="skill-card-cap">Capítulo 5</div></div>
-        <span class="skill-chev">›</span>
-      </div>
-      <div class="skill-body">
-        <p>O pensamento dialético é o antídoto ao pensamento <strong>"tudo ou nada"</strong> — aquele que diz "errei uma vez, já que estraguei tudo, vou comer muito mais". É pensar de forma flexível, aceitando que duas verdades opostas podem coexistir.</p>
-        <p>Exemplo: <em>"Quero muito parar a compulsão E hoje foi difícil — as duas coisas são verdade ao mesmo tempo."</em> Como um atleta olímpico que treina e ainda assim tem dias ruins sem abandonar o esporte.</p>
-        <div class="skill-tip"><strong>Frase-chave</strong>"Eu posso aceitar como sou agora E me comprometer com a mudança ao mesmo tempo."</div>
-      </div>
-    </div>
-
-    <div class="skill-card">
-      <div class="skill-card-hdr" onclick="toggleSkill(this)">
-        <div class="skill-card-icon" style="background:var(--amber-l)">🎯</div>
-        <div><div class="skill-card-name">Uma Coisa de Cada Vez</div><div class="skill-card-cap">Capítulo 6</div></div>
-        <span class="skill-chev">›</span>
-      </div>
-      <div class="skill-body">
-        <p>Concentrar-se completamente em uma única atividade, sem multitasking. Isso direciona sua atenção, desacelera a mente e dificulta que pensamentos sobre comida tomem conta.</p>
-        <div class="skill-tip"><strong>Quando usar</strong>Enquanto come (sem celular, TV ou distrações), ao fazer qualquer tarefa rotineira, ao sentir impulso de comer.</div>
-      </div>
-    </div>
-
-    <div class="skill-card">
-      <div class="skill-card-hdr" onclick="toggleSkill(this)">
-        <div class="skill-card-icon" style="background:var(--green-l)">✅</div>
-        <div><div class="skill-card-name">Ser Eficaz</div><div class="skill-card-cap">Capítulo 6</div></div>
-        <span class="skill-chev">›</span>
-      </div>
-      <div class="skill-body">
-        <p>Fazer o que é necessário para atingir suas metas, mesmo quando não parece "perfeito" ou "justo". Significa abandonar o perfeccionismo e agir com base no que funciona, não no que <em>deveria</em> funcionar.</p>
-        <div class="skill-tip"><strong>Exemplo</strong>Em vez de "só vou usar a habilidade se funcionar 100%", pense "vou fazer o que posso agora, mesmo imperfeito."</div>
-      </div>
-    </div>
-
-    <!-- REGULAÇÃO EMOCIONAL -->
-    <div class="slabel" style="margin-top:14px">❤️ Módulo 2 · Regulação Emocional</div>
-
-    <div class="skill-card">
-      <div class="skill-card-hdr" onclick="toggleSkill(this)">
-        <div class="skill-card-icon" style="background:var(--pink-l)">🍽️</div>
-        <div><div class="skill-card-name">Comer com Atenção Plena</div><div class="skill-card-cap">Capítulo 8</div></div>
-        <span class="skill-chev">›</span>
-      </div>
-      <div class="skill-body">
-        <p>Comer com total presença: percebendo sabores, texturas, sensações de fome e saciedade. Aplica três habilidades ao ato de comer: <strong>observação, postura não julgadora e foco em uma coisa</strong>.</p>
-        <p>Você não pode ter atenção plena e compulsão ao mesmo tempo — são incompatíveis. A compulsão alimentar opera no piloto automático; a atenção plena desliga esse piloto.</p>
-        <div class="skill-tip"><strong>Como praticar</strong>Sem telas. Sente-se. Observe o cheiro, a textura, o sabor. Mastigue devagar. Perceba quando começa a sentir saciedade.</div>
-      </div>
-    </div>
-
-    <!-- TOLERÂNCIA AO MAL-ESTAR -->
-    <div class="slabel" style="margin-top:14px">🌊 Módulo 3 · Tolerância ao Mal-Estar</div>
-
-    <div class="skill-card">
-      <div class="skill-card-hdr" onclick="toggleSkill(this)">
-        <div class="skill-card-icon" style="background:var(--teal-l)">🏄</div>
-        <div><div class="skill-card-name">Surfar sobre o Impulso</div><div class="skill-card-cap">Capítulo 8</div></div>
-        <span class="skill-chev">›</span>
-      </div>
-      <div class="skill-body">
-        <p>Acompanhar a vontade de comer <strong>sem ceder a ela</strong>, deixando-a passar naturalmente como uma onda no mar. As pesquisas mostram que vontades intensas raramente duram mais de 20 minutos.</p>
-        <p>Visualize você em uma prancha de surfe. Sinta a onda (o impulso) crescer, aumentar... e diminuir. Você não precisa pular da prancha. A onda sempre passa.</p>
-        <div class="skill-tip"><strong>Passo a passo</strong>1. Perceba o impulso · 2. Nomeie: "estou com vontade de comer" · 3. Respire fundo · 4. Observe a vontade sem agir · 5. Espere — ela vai diminuir.</div>
-        <div class="skill-tip"><strong>Renovação do comprometimento</strong>Releia seus cartões (motivação e comprometimento) sempre que o impulso aparecer. Isso quebra o primeiro elo da cadeia.</div>
-      </div>
-    </div>
-
+    <div class="skill-card"><div class="skill-card-hdr" onclick="toggleSkill(this)"><div class="skill-card-icon ip">🔗</div><div><div class="skill-card-name">Análise em Cadeia</div><div class="skill-card-cap">Ferramenta essencial</div></div><span class="skill-chev">›</span></div><div class="skill-body"><p>A compulsão não "simplesmente acontece" — é resultado de uma cadeia de eventos detectáveis. Mapeie o caminho passo a passo, identifique onde poderia ter agido diferente e aprenda sem se julgar.</p><div class="skill-tip"><strong>Como usar</strong>Preencha após cada episódio. Com o tempo, você reconhece padrões e intervém antes da compulsão.</div></div></div>
+    <div class="slabel" style="margin-top:14px">🧘 Mindfulness</div>
+    <div class="skill-card"><div class="skill-card-hdr" onclick="toggleSkill(this)"><div class="skill-card-icon ip">🧠</div><div><div class="skill-card-name">Mente Sábia</div><div class="skill-card-cap">Capítulo 3</div></div><span class="skill-chev">›</span></div><div class="skill-body"><p>Ponto de equilíbrio entre a <strong>mente racional</strong> e a <strong>mente emocional</strong>. Pergunte: <em>"O que minha mente sábia diria agora?"</em></p><div class="skill-tip"><strong>Quando usar</strong>Antes de decisões difíceis, ao sentir impulso de comer.</div></div></div>
+    <div class="skill-card"><div class="skill-card-hdr" onclick="toggleSkill(this)"><div class="skill-card-icon" style="background:#DBEAFE">🫁</div><div><div class="skill-card-name">Respiração Diafragmática</div><div class="skill-card-cap">Capítulo 3</div></div><span class="skill-chev">›</span></div><div class="skill-body"><p>Inspire pelo nariz contando até 3 (barriga expande). Expire contando até 5 dizendo "relaxe". Repita 10 vezes.</p><div class="skill-tip"><strong>Quando usar</strong>Ao sentir tensão, impulso de comer, ansiedade.</div></div></div>
+    <div class="skill-card"><div class="skill-card-hdr" onclick="toggleSkill(this)"><div class="skill-card-icon it">👁️</div><div><div class="skill-card-name">Observação sem Julgamento</div><div class="skill-card-cap">Capítulo 5</div></div><span class="skill-chev">›</span></div><div class="skill-body"><p>Observe emoções sem julgá-las nem reagir. Em vez de "sou um fracasso", apenas "estou notando raiva agora".</p><div class="skill-tip"><strong>Prática</strong>Nomeie a emoção: "Estou observando ansiedade. É intensa, mas vai passar."</div></div></div>
+    <div class="skill-card"><div class="skill-card-hdr" onclick="toggleSkill(this)"><div class="skill-card-icon ipk">⚖️</div><div><div class="skill-card-name">Pensamento Dialético</div><div class="skill-card-cap">Capítulo 5</div></div><span class="skill-chev">›</span></div><div class="skill-body"><p>Antídoto ao pensamento "tudo ou nada". Duas verdades opostas podem coexistir: <em>"Quero parar E hoje foi difícil."</em></p><div class="skill-tip"><strong>Frase-chave</strong>"Posso aceitar como sou agora E me comprometer com a mudança."</div></div></div>
+    <div class="slabel" style="margin-top:14px">🌊 Tolerância ao Mal-Estar</div>
+    <div class="skill-card"><div class="skill-card-hdr" onclick="toggleSkill(this)"><div class="skill-card-icon it">🏄</div><div><div class="skill-card-name">Surfar sobre o Impulso</div><div class="skill-card-cap">Capítulo 8</div></div><span class="skill-chev">›</span></div><div class="skill-body"><p>Acompanhe a vontade de comer sem ceder, deixando-a passar como uma onda. Vontades raramente duram mais de 20 minutos.</p><div class="skill-tip"><strong>Passo a passo</strong>1. Perceba o impulso · 2. Nomeie · 3. Respire · 4. Observe sem agir · 5. Espere — vai diminuir.</div></div></div>
+    <div class="skill-card"><div class="skill-card-hdr" onclick="toggleSkill(this)"><div class="skill-card-icon ipk">🍽️</div><div><div class="skill-card-name">Comer com Atenção Plena</div><div class="skill-card-cap">Capítulo 8</div></div><span class="skill-chev">›</span></div><div class="skill-body"><p>Coma com total presença — sem telas, percebendo sabores, texturas e saciedade. Você não pode ter atenção plena e compulsão ao mesmo tempo.</p></div></div>
   </section>
 
-  <!-- ═══ HISTÓRICO ═══ -->
+  <!-- HISTÓRICO -->
   <section class="sec" id="sec-historico">
     <div class="ptitle">Histórico</div>
-    <div class="psub">Seu progresso no programa 📊</div>
+    <div class="psub">Seu progresso 📊</div>
     <div class="srow3">
       <div class="sbox"><div class="snum" id="stDays">0</div><div class="slbl">dias registrados</div></div>
       <div class="sbox"><div class="snum" id="stStreak" style="color:var(--pink)">0</div><div class="slbl">dias seguidos</div></div>
@@ -560,7 +342,7 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
     </div>
     <div class="card">
       <div class="ctitle"><div class="cicon ip">📖</div>Registros diários</div>
-      <div id="dHist"><div class="empty"><div class="empty-ico">📖</div><p>Nenhum registro ainda.<br>Comece pelo Cartão Diário!</p></div></div>
+      <div id="dHist"><div class="empty"><div class="empty-ico">📖</div><p>Nenhum registro ainda.</p></div></div>
     </div>
     <div class="card">
       <div class="ctitle"><div class="cicon it">🔗</div>Análises em cadeia</div>
@@ -581,29 +363,203 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
 <div class="toast" id="toast"></div>
 
 <script>
-const ST={
-  diary:JSON.parse(localStorage.getItem('dbt_diary')||'{}'),
-  chains:JSON.parse(localStorage.getItem('dbt_chains')||'[]'),
-  mot:localStorage.getItem('dbt_motivation')||'',
-  com:localStorage.getItem('dbt_commitment')||'',
-  adv:JSON.parse(localStorage.getItem('dbt_adv')||'[]'),
-  dis:JSON.parse(localStorage.getItem('dbt_disad')||'[]'),
-};
-function save(){
-  localStorage.setItem('dbt_diary',JSON.stringify(ST.diary));
-  localStorage.setItem('dbt_chains',JSON.stringify(ST.chains));
-  localStorage.setItem('dbt_motivation',ST.mot);
-  localStorage.setItem('dbt_commitment',ST.com);
-  localStorage.setItem('dbt_adv',JSON.stringify(ST.adv));
-  localStorage.setItem('dbt_disad',JSON.stringify(ST.dis));
+const SUPA_URL='https://vroptnpzfuwvypumqqek.supabase.co';
+const SUPA_KEY='sb_publishable_XM-RIS1JAvxU4evXi32m3g_mSJS6AY6';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+
+let USER=null;
+let isLogin=true;
+
+async function doAuth(){
+  const email=document.getElementById('authEmail').value.trim();
+  const pass=document.getElementById('authPass').value;
+  const err=document.getElementById('authErr');
+  const btn=document.getElementById('authBtn');
+  err.style.display='none';
+  btn.disabled=true;
+  btn.textContent=isLogin?'Entrando...':'Criando conta...';
+  try{
+    let res;
+    if(isLogin){
+      res=await sb.auth.signInWithPassword({email,password:pass});
+    } else {
+      res=await sb.auth.signUp({email,password:pass});
+    }
+    if(res.error)throw res.error;
+    if(!isLogin && res.data.user && !res.data.session){
+      err.style.display='block';
+      err.style.background='var(--green-l)';
+      err.style.color='var(--green)';
+      err.textContent='✅ Conta criada! Verifique seu e-mail para confirmar.';
+      btn.disabled=false;btn.textContent='Entrar';
+      return;
+    }
+    USER=res.data.user;
+    await onLogin();
+  } catch(e){
+    err.style.display='block';
+    err.style.background='var(--red-l)';
+    err.style.color='var(--red)';
+    err.textContent=e.message||'Erro ao autenticar';
+    btn.disabled=false;
+    btn.textContent=isLogin?'Entrar':'Criar conta';
+  }
 }
 
+function toggleAuth(){
+  isLogin=!isLogin;
+  document.getElementById('authSub').textContent=isLogin?'Entre para acessar seu diário':'Crie sua conta gratuita';
+  document.getElementById('authBtn').textContent=isLogin?'Entrar':'Criar conta';
+  document.getElementById('authSwitch').textContent=isLogin?'Não tenho conta — Criar agora':'Já tenho conta — Entrar';
+  document.getElementById('authErr').style.display='none';
+}
+
+async function signOut(){
+  await sb.auth.signOut();
+  USER=null;
+  document.getElementById('authWrap').style.display='flex';
+  document.getElementById('authBtn').textContent='Entrar';
+  toast('Até logo! 👋');
+}
+
+async function onLogin(){
+  document.getElementById('authWrap').style.display='none';
+  await loadAll();
+  init();
+}
+
+// ── DATA ──
 const TODAY=new Date();
 const TK=TODAY.toISOString().split('T')[0];
 document.getElementById('hdrDate').textContent=TODAY.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
 
 let D={compSmall:0,compBig:0,cp:null,cpDesc:'',emotions:{},skills:{},quit:0,notes:''};
+let CARDS={motivation:'',commitment:'',advantages:[],disadvantages:[]};
+let DIARY={};
+let CHAINS=[];
 
+async function loadAll(){
+  await loadDiary();
+  await loadCards();
+  await loadChains();
+}
+
+async function loadDiary(){
+  const {data}=await sb.from('diary_entries').select('*').eq('user_id',USER.id);
+  if(data){
+    DIARY={};
+    data.forEach(r=>{
+      DIARY[r.date]={
+        compSmall:r.comp_small,compBig:r.comp_big,
+        cp:r.cp,cpDesc:r.cp_desc,
+        emotions:r.emotions||{},skills:r.skills||{},
+        quit:r.quit,notes:r.notes
+      };
+    });
+    if(DIARY[TK])D={...D,...DIARY[TK]};
+  }
+}
+
+async function loadCards(){
+  const {data}=await sb.from('user_cards').select('*').eq('user_id',USER.id).single();
+  if(data){
+    CARDS={
+      motivation:data.motivation||'',
+      commitment:data.commitment||'',
+      advantages:data.advantages||[],
+      disadvantages:data.disadvantages||[]
+    };
+  }
+}
+
+async function loadChains(){
+  const {data}=await sb.from('chain_analyses').select('*').eq('user_id',USER.id).order('saved_at',{ascending:false});
+  if(data)CHAINS=data;
+}
+
+async function saveDiary(){
+  const btn=document.getElementById('saveDiaryBtn');
+  btn.disabled=true;btn.textContent='Salvando...';
+  D.notes=document.getElementById('dNotes').value;
+  D.cpDesc=document.getElementById('cpTxt').value;
+  const {error}=await sb.from('diary_entries').upsert({
+    user_id:USER.id,date:TK,
+    comp_small:D.compSmall,comp_big:D.compBig,
+    cp:D.cp||false,cp_desc:D.cpDesc,
+    emotions:D.emotions,skills:D.skills,
+    quit:D.quit,notes:D.notes,
+    saved_at:new Date().toISOString()
+  },{onConflict:'user_id,date'});
+  btn.disabled=false;btn.textContent='💾 Salvar registro do dia';
+  if(error){toast('❌ Erro ao salvar');return;}
+  DIARY[TK]={...D};
+  buildWeek();updateStreak();
+  toast('✅ Registro salvo na nuvem!');
+}
+
+async function saveCards(){
+  const {error}=await sb.from('user_cards').upsert({
+    user_id:USER.id,
+    motivation:CARDS.motivation,
+    commitment:CARDS.commitment,
+    advantages:CARDS.advantages,
+    disadvantages:CARDS.disadvantages,
+    updated_at:new Date().toISOString()
+  },{onConflict:'user_id'});
+  if(error)toast('❌ Erro ao salvar');
+  else toast('✅ Salvo na nuvem!');
+}
+
+async function saveMot(){
+  const v=document.getElementById('motInput').value;
+  if(v)CARDS.motivation=v;
+  await saveCards();renderMot();
+}
+
+async function saveCom(){
+  CARDS.commitment=document.getElementById('comInput').value;
+  await saveCards();renderCom();
+}
+
+async function addAdv(){
+  const v=document.getElementById('advIn').value.trim();
+  if(!v)return;
+  CARDS.advantages.push(v);
+  document.getElementById('advIn').value='';
+  await saveCards();renderAD();
+}
+async function addDisad(){
+  const v=document.getElementById('disadIn').value.trim();
+  if(!v)return;
+  CARDS.disadvantages.push(v);
+  document.getElementById('disadIn').value='';
+  await saveCards();renderAD();
+}
+async function rmAdv(i){CARDS.advantages.splice(i,1);await saveCards();renderAD();}
+async function rmDis(i){CARDS.disadvantages.splice(i,1);await saveCards();renderAD();}
+
+async function saveChain(){
+  const {error}=await sb.from('chain_analyses').insert({
+    user_id:USER.id,date:TK,
+    comportamento:document.getElementById('c1').value,
+    gatilho:document.getElementById('c2').value,
+    vulnerabilidades:[...VS].concat(document.getElementById('c3x').value?[document.getElementById('c3x').value]:[]),
+    elos:[...elos],
+    alternativa:document.getElementById('c5').value,
+    consequencias_imediatas:document.getElementById('c6a').value,
+    consequencias_longo:document.getElementById('c6b').value,
+    plano_reparacao:document.getElementById('c7').value,
+    saved_at:new Date().toISOString()
+  });
+  if(error){toast('❌ Erro ao salvar');return;}
+  ['c1','c2','c3x','c5','c6a','c6b','c7'].forEach(id=>document.getElementById(id).value='');
+  elos=[];renderElos();VS.clear();
+  document.querySelectorAll('.vtag').forEach(b=>b.classList.remove('sel'));
+  await loadChains();
+  toast('✅ Análise salva na nuvem!');
+}
+
+// ── UI ──
 function goTo(id,btn){
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
@@ -635,10 +591,10 @@ const EMOTS=[
 function buildEmots(){
   const g=document.getElementById('emotionGrid');g.innerHTML='';
   EMOTS.forEach(em=>{
-    const d2=document.createElement('div');d2.className='eitem';
-    d2.innerHTML=`<div class="elabel">${em.n}</div><div class="escale" id="eg_${em.k}"></div>`;
-    g.appendChild(d2);
-    const r=d2.querySelector('.escale');
+    const d=document.createElement('div');d.className='eitem';
+    d.innerHTML=`<div class="elabel">${em.n}</div><div class="escale" id="eg_${em.k}"></div>`;
+    g.appendChild(d);
+    const r=d.querySelector('.escale');
     for(let i=0;i<=6;i++){
       const b=document.createElement('button');
       b.className='ebtn'+(D.emotions[em.k]===i?' sel':'');
@@ -678,14 +634,14 @@ function buildWeek(){
   const diff=dow===0?-6:1-dow;
   const mon=new Date(now);mon.setDate(now.getDate()+diff);
   for(let i=0;i<7;i++){
-    const d2=new Date(mon);d2.setDate(mon.getDate()+i);
-    const key=d2.toISOString().split('T')[0];
-    const rec=ST.diary[key];
+    const d=new Date(mon);d.setDate(mon.getDate()+i);
+    const key=d.toISOString().split('T')[0];
+    const rec=DIARY[key];
     const isToday=key===TK;
     const hasComp=rec&&((rec.compSmall||0)+(rec.compBig||0)>0);
     const el=document.createElement('div');
     el.className='wday'+(isToday?' today':'')+(hasComp?' comp':rec?' filled':'');
-    el.innerHTML=`<span class="dl">${DL[(i+1)%7==='0'?0:(i+1)%7]||DL[i]}</span><span>${d2.getDate()}</span>`;
+    el.innerHTML=`<span class="dl">${DL[(d.getDay())]}</span><span>${d.getDate()}</span>`;
     g.appendChild(el);
   }
 }
@@ -697,36 +653,6 @@ function setCp(val){
   document.getElementById('cpDesc').style.display=val?'block':'none';
 }
 
-function saveDiary(){
-  D.notes=document.getElementById('dNotes').value;
-  D.cpDesc=document.getElementById('cpTxt').value;
-  ST.diary[TK]={...D,savedAt:new Date().toISOString()};
-  save();buildWeek();updateStreak();
-  toast('✓ Registro salvo!');
-}
-
-function saveMot(){ST.mot=document.getElementById('motInput').value;save();renderMot();toast('✓ Motivação salva!');}
-function renderMot(){
-  const txt=document.getElementById('motDisp');
-  const disp=document.getElementById('motDisplay');
-  // restore selected pill
-  const pills=document.querySelectorAll('.mot-pill');
-  const MOTS=[
-    'A compulsão alimentar me afasta da possibilidade de me sentir plenamente feliz e satisfeito(a) comigo mesmo(a). Quero viver com todo meu potencial.',
-    'Meus valores são importantes demais para perdê-los de vista. O abismo que a compulsão oferece pode ser atraente, mas quero estar presente na minha própria vida.',
-    'Cada vez que uso uma habilidade no lugar da compulsão, estou reprogramando meu cérebro e me tornando mais livre. Cada tentativa conta.',
-    'Qualquer recaída, embora indesejável, é uma nova oportunidade de aprender e praticar. Não preciso ser perfeito(a) — preciso continuar.',
-    'Não estou simplesmente "sobrevivendo". Mereço a melhor vida que sou capaz de viver — e estou aprendendo a construí-la, um dia de cada vez.',
-  ];
-  pills.forEach((p,i)=>{p.classList.toggle('sel',ST.mot===MOTS[i]);});
-  if(ST.mot){
-    txt.textContent=ST.mot;
-    disp.style.display='block';
-  } else {
-    disp.style.display='none';
-  }
-  document.getElementById('motInput').value=ST.mot&&!MOTS.includes(ST.mot)?ST.mot:'';
-}
 const MOT_PHRASES=[
   'A compulsão alimentar me afasta da possibilidade de me sentir plenamente feliz e satisfeito(a) comigo mesmo(a). Quero viver com todo meu potencial.',
   'Meus valores são importantes demais para perdê-los de vista. O abismo que a compulsão oferece pode ser atraente, mas quero estar presente na minha própria vida.',
@@ -737,40 +663,39 @@ const MOT_PHRASES=[
 function selectMot(el,idx){
   document.querySelectorAll('.mot-pill').forEach(p=>p.classList.remove('sel'));
   el.classList.add('sel');
-  ST.mot=MOT_PHRASES[idx];
-  save();renderMot();toast('✓ Motivação selecionada!');
+  CARDS.motivation=MOT_PHRASES[idx];
+  saveCards();renderMot();toast('✅ Motivação selecionada!');
+}
+function renderMot(){
+  document.querySelectorAll('.mot-pill').forEach((p,i)=>{p.classList.toggle('sel',CARDS.motivation===MOT_PHRASES[i]);});
+  const disp=document.getElementById('motDisplay');
+  if(CARDS.motivation){document.getElementById('motDisp').textContent=CARDS.motivation;disp.style.display='block';}
+  else disp.style.display='none';
+  const custom=!MOT_PHRASES.includes(CARDS.motivation);
+  document.getElementById('motInput').value=custom?CARDS.motivation:'';
 }
 function useExampleCommit(){
-  const ex='Para conseguir honrar o valor que minha vida tem, a compulsão alimentar NÃO é uma opção. Quando acabo recorrendo à compulsão, não estou vivendo de fato. Quero descobrir quem sou de verdade. O abismo da compulsão, embora atraente no início, é um desperdício das minhas oportunidades de viver plenamente e com autenticidade.';
-  document.getElementById('comInput').value=ex;
+  document.getElementById('comInput').value='Para conseguir honrar o valor que minha vida tem, a compulsão alimentar NÃO é uma opção. Quando acabo recorrendo à compulsão, não estou vivendo de fato. Quero descobrir quem sou de verdade.';
   toast('Texto copiado para edição!');
 }
-function toggleSkill(hdr){
-  const card=hdr.closest('.skill-card');
-  card.classList.toggle('open');
-}
-function saveCom(){ST.com=document.getElementById('comInput').value;save();renderCom();toast('✓ Comprometimento salvo!');}
 function renderCom(){
   const d=document.getElementById('comDisp');
-  if(ST.com){d.textContent=ST.com;d.style.display='block';}
-  document.getElementById('comInput').value=ST.com;
+  if(CARDS.commitment){d.textContent=CARDS.commitment;d.style.display='block';}
+  document.getElementById('comInput').value=CARDS.commitment;
 }
-
 function renderAD(){
-  ['adv','dis'].forEach(t=>{
-    const el=document.getElementById(t==='adv'?'advList':'disadList');el.innerHTML='';
-    const arr=t==='adv'?ST.adv:ST.dis;
+  ['advantages','disadvantages'].forEach(t=>{
+    const el=document.getElementById(t==='advantages'?'advList':'disadList');el.innerHTML='';
+    const arr=CARDS[t];
     arr.forEach((a,i)=>{
       const d=document.createElement('div');d.className='lentry';
-      d.innerHTML=`<span class="lnum">${i+1}.</span><span style="flex:1;font-size:13px;font-weight:700">${a}</span><button class="ldel" onclick="${t==='adv'?'rmAdv':'rmDis'}(${i})">×</button>`;
+      d.innerHTML=`<span style="font-size:11px;font-weight:800;color:var(--muted)">${i+1}.</span><span style="flex:1;font-size:13px;font-weight:700">${a}</span><button class="ldel" onclick="${t==='advantages'?'rmAdv':'rmDis'}(${i})">×</button>`;
       el.appendChild(d);
     });
   });
 }
-function addAdv(){const v=document.getElementById('advIn').value.trim();if(!v)return;ST.adv.push(v);document.getElementById('advIn').value='';save();renderAD();}
-function addDisad(){const v=document.getElementById('disadIn').value.trim();if(!v)return;ST.dis.push(v);document.getElementById('disadIn').value='';save();renderAD();}
-function rmAdv(i){ST.adv.splice(i,1);save();renderAD();}
-function rmDis(i){ST.dis.splice(i,1);save();renderAD();}
+
+function toggleSkill(hdr){hdr.closest('.skill-card').classList.toggle('open');}
 
 const VS=new Set();
 function toggleVuln(el,v){if(VS.has(v)){VS.delete(v);el.classList.remove('sel');}else{VS.add(v);el.classList.add('sel');}}
@@ -794,37 +719,18 @@ function renderElos(){
       <button class="elodel" onclick="rmElo(${i})">×</button>
     </div>
     <div class="elosub">✨ Habilidade substituta:</div>
-    <input type="text" placeholder="Ex: Respiração diafragmática..." value="${e.hab}" oninput="elos[${i}].hab=this.value" style="margin-bottom:0">`;
+    <input type="text" placeholder="Ex: Respiração..." value="${e.hab}" oninput="elos[${i}].hab=this.value" style="margin-bottom:0">`;
     el.appendChild(d);
   });
 }
 
-function saveChain(){
-  ST.chains.unshift({
-    date:TK,savedAt:new Date().toISOString(),
-    comportamento:document.getElementById('c1').value,
-    gatilho:document.getElementById('c2').value,
-    vulnerabilidades:[...VS].concat(document.getElementById('c3x').value?[document.getElementById('c3x').value]:[]),
-    elos:[...elos],
-    c5:document.getElementById('c5').value,
-    c6a:document.getElementById('c6a').value,
-    c6b:document.getElementById('c6b').value,
-    c7:document.getElementById('c7').value,
-  });
-  save();
-  ['c1','c2','c3x','c5','c6a','c6b','c7'].forEach(id=>document.getElementById(id).value='');
-  elos=[];renderElos();VS.clear();
-  document.querySelectorAll('.vtag').forEach(b=>b.classList.remove('sel'));
-  toast('✓ Análise salva!');
-}
-
 function renderHist(){
-  const keys=Object.keys(ST.diary).sort().reverse();
+  const keys=Object.keys(DIARY).sort().reverse();
   const el=document.getElementById('dHist');
   if(!keys.length){el.innerHTML='<div class="empty"><div class="empty-ico">📖</div><p>Nenhum registro ainda.</p></div>';return;}
   el.innerHTML='';
   keys.forEach(k=>{
-    const r=ST.diary[k];
+    const r=DIARY[k];
     const date=new Date(k+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'short',day:'numeric',month:'short'});
     const sk=Object.values(r.skills||{}).filter(Boolean).length;
     const hc=(r.compSmall||0)+(r.compBig||0)>0;
@@ -833,38 +739,47 @@ function renderHist(){
       <div style="display:flex;flex-wrap:wrap;gap:3px">
         ${hc?`<span class="tag tr">🍽️ ${(r.compSmall||0)+(r.compBig||0)} episódio(s)</span>`:'<span class="tag tg">✅ Sem compulsões</span>'}
         ${sk>0?`<span class="tag tp">✨ ${sk} habilidade(s)</span>`:''}
-        ${r.quit>3?`<span class="tag ta">⚠️ Desistir: ${r.quit}</span>`:''}
       </div>
       ${r.notes?`<div style="font-size:12px;color:var(--muted);margin-top:5px;font-weight:600">${r.notes.slice(0,80)}${r.notes.length>80?'...':''}</div>`:''}`;
     el.appendChild(d);
   });
+  document.getElementById('stDays').textContent=keys.length;
+  document.getElementById('stChains').textContent=CHAINS.length;
+
   const ce=document.getElementById('cHist');
-  if(!ST.chains.length){ce.innerHTML='<div class="empty"><div class="empty-ico">🔗</div><p>Nenhuma análise ainda.</p></div>';return;}
+  if(!CHAINS.length){ce.innerHTML='<div class="empty"><div class="empty-ico">🔗</div><p>Nenhuma análise ainda.</p></div>';return;}
   ce.innerHTML='';
-  ST.chains.forEach(c=>{
+  CHAINS.forEach(c=>{
     const date=new Date(c.date+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'short',day:'numeric',month:'short'});
     const d=document.createElement('div');d.className='hitem';
     d.innerHTML=`<div style="font-size:14px;font-weight:800;margin-bottom:4px">${date}</div>
-      <div style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:4px">Gatilho: ${c.gatilho?c.gatilho.slice(0,50):'—'}</div>
-      ${c.vulnerabilidades?.length?`<div>${c.vulnerabilidades.map(v=>`<span class="tag ta">${v}</span>`).join('')}</div>`:''}`;
+      <div style="font-size:13px;color:var(--muted);font-weight:600">${c.gatilho?c.gatilho.slice(0,60):'—'}</div>
+      ${c.vulnerabilidades?.length?`<div style="margin-top:4px">${c.vulnerabilidades.map(v=>`<span class="tag ta">${v}</span>`).join('')}</div>`:''}`;
     ce.appendChild(d);
   });
-  document.getElementById('stDays').textContent=keys.length;
-  document.getElementById('stChains').textContent=ST.chains.length;
-  let s=0;for(let i=0;i<keys.length;i++){const r=new Date(keys[0]+'T12:00:00');r.setDate(r.getDate()-i);if(keys[i]===r.toISOString().split('T')[0])s++;else break;}
+
+  // streak
+  let s=0;
+  for(let i=0;i<keys.length;i++){
+    const ref=new Date(keys[0]+'T12:00:00');ref.setDate(ref.getDate()-i);
+    if(keys[i]===ref.toISOString().split('T')[0])s++;else break;
+  }
   document.getElementById('stStreak').textContent=s;
 }
 
 function updateStreak(){
-  const sk=Object.keys(ST.diary).sort().reverse();
-  let s=0;for(let i=0;i<sk.length;i++){const r=new Date(sk[0]+'T12:00:00');r.setDate(r.getDate()-i);if(sk[i]===r.toISOString().split('T')[0])s++;else break;}
+  const keys=Object.keys(DIARY).sort().reverse();
+  let s=0;
+  for(let i=0;i<keys.length;i++){
+    const ref=new Date(keys[0]+'T12:00:00');ref.setDate(ref.getDate()-i);
+    if(keys[i]===ref.toISOString().split('T')[0])s++;else break;
+  }
   document.getElementById('hdrStreak').textContent=`🔥 ${s} ${s===1?'dia':'dias'}`;
 }
 
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
 function init(){
-  if(ST.diary[TK])D={...D,...ST.diary[TK]};
   mkScale('scSmall',6,v=>{D.compSmall=v;},D.compSmall,true);
   mkScale('scBig',6,v=>{D.compBig=v;},D.compBig,true);
   mkScale('scQuit',6,v=>{D.quit=v;},D.quit,false);
@@ -874,7 +789,12 @@ function init(){
   if(D.cpDesc)document.getElementById('cpTxt').value=D.cpDesc;
   if(D.notes)document.getElementById('dNotes').value=D.notes;
 }
-init();
+
+// Verificar sessão existente
+(async()=>{
+  const {data:{session}}=await sb.auth.getSession();
+  if(session){USER=session.user;await onLogin();}
+})();
 </script>
 </body>
 </html>
